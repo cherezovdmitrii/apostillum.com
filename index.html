@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apostillum — Whoever controls the record controls the truth.</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F2ED;
+    --ink: #1A1814;
+    --ink-mid: #4A4640;
+    --ink-light: #7A7570;
+    --ink-faint: #C4BFB8;
+    --confirmed: #2A5C3F;
+    --border: #D4CFC8;
+    --mono: 'DM Mono', monospace;
+    --serif: 'EB Garamond', serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--serif);
+    min-height: 100vh;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 48px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(245,242,237,0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .wordmark {
+    display: flex;
+    align-items: baseline;
+    gap: 0;
+  }
+
+  .wordmark-name {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    color: #1A1814;
+    line-height: 1;
+    margin-right: 10px;
+  }
+
+  .wordmark-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #8BCA7A;
+    flex-shrink: 0;
+    margin-right: 10px;
+    margin-bottom: 4px;
+    box-shadow: 0 0 0 2px rgba(139,202,122,0.2);
+  }
+
+  .wordmark-tag {
+    font-family: var(--mono);
+    font-size: 8px;
+    font-weight: 300;
+    letter-spacing: 0.22em;
+    color: #546A48;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .nav-cta {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: var(--bg);
+    border: none;
+    padding: 11px 22px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* ─── HERO ─── */
+  .hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 100px 48px 80px;
+    overflow: hidden;
+    min-height: 480px;
+  }
+
+  .hero-watermark {
+    position: absolute;
+    font-family: var(--serif);
+    font-size: 320px;
+    font-weight: 500;
+    color: rgba(26,24,20,0.038);
+    letter-spacing: -0.04em;
+    pointer-events: none;
+    user-select: none;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    line-height: 1;
+  }
+
+  .hero-headline {
+    font-family: var(--serif);
+    font-size: 58px;
+    font-weight: 400;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    max-width: 760px;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 22px;
+    color: var(--ink);
+  }
+
+  /* THE KEY LINE — replaces redundant "Apostillum" */
+  .hero-bridge {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 20px;
+    color: var(--ink-mid);
+    position: relative;
+    z-index: 1;
+    margin-bottom: 36px;
+    max-width: 560px;
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+  }
+
+  .hero-cta {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: var(--bg);
+    border: none;
+    padding: 16px 40px;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    transition: opacity 0.15s;
+  }
+
+  .hero-cta:hover { opacity: 0.85; }
+
+  /* ─── TICKER ─── */
+  .ticker {
+    background: var(--ink);
+    padding: 11px 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .ticker-track {
+    display: flex;
+    gap: 0;
+    animation: ticker-scroll 28s linear infinite;
+    width: max-content;
+  }
+
+  .ticker-track:hover { animation-play-state: paused; }
+
+  @keyframes ticker-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .ticker-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 32px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(245,242,237,0.7);
+    white-space: nowrap;
+    border-right: 1px solid rgba(245,242,237,0.12);
+  }
+
+  .ticker-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4CAF7C;
+    flex-shrink: 0;
+  }
+
+  .ticker-dot.neutral {
+    background: rgba(245,242,237,0.35);
+  }
+
+  /* ─── PROOF STRIP ─── */
+  .proof-strip {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .proof-item {
+    flex: 1;
+    padding: 28px 32px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .proof-item:last-child { border-right: none; }
+
+  .proof-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+  }
+
+  .proof-value {
+    font-family: var(--serif);
+    font-size: 17px;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+
+  .proof-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-light);
+    letter-spacing: 0.04em;
+    margin-top: 2px;
+  }
+
+  /* ─── THE ASYMMETRY SECTION ─── */
+  .asymmetry {
+    padding: 72px 48px;
+    border-bottom: 1px solid var(--border);
+    max-width: 860px;
+  }
+
+  .section-eyebrow {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .asymmetry-quote {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 26px;
+    line-height: 1.45;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    padding-left: 24px;
+    border-left: 2px solid var(--ink);
+    margin-bottom: 28px;
+    max-width: 700px;
+  }
+
+  .asymmetry-body {
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--ink-mid);
+    max-width: 680px;
+  }
+
+  .asymmetry-body strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* ─── HOW IT WORKS ─── */
+  .how {
+    padding: 72px 48px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 80px;
+    align-items: flex-start;
+  }
+
+  .how-left {
+    width: 280px;
+    flex-shrink: 0;
+  }
+
+  .how-title {
+    font-family: var(--serif);
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+  }
+
+  .how-sub {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 17px;
+    color: var(--ink-mid);
+    line-height: 1.6;
+  }
+
+  .how-steps {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .step {
+    display: flex;
+    gap: 24px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+
+  .step:last-child { border-bottom: none; }
+
+  .step-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.1em;
+    flex-shrink: 0;
+    width: 28px;
+    padding-top: 3px;
+  }
+
+  .step-content {}
+
+  .step-title {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 5px;
+    letter-spacing: -0.01em;
+  }
+
+  .step-desc {
+    font-family: var(--serif);
+    font-size: 16px;
+    color: var(--ink-mid);
+    line-height: 1.6;
+  }
+
+  /* ─── THE REAL COST ─── */
+  .cost-block {
+    padding: 72px 48px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 64px;
+    align-items: flex-start;
+  }
+
+  .cost-left {
+    flex: 1;
+  }
+
+  .cost-title {
+    font-family: var(--serif);
+    font-size: 32px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+    line-height: 1.2;
+  }
+
+  .cost-body {
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--ink-mid);
+    max-width: 480px;
+  }
+
+  .cost-body strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .cost-right {
+    width: 300px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .cost-row {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+  }
+
+  .cost-row:last-child { border-bottom: none; }
+
+  .cost-row-label {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--ink-mid);
+    line-height: 1.4;
+  }
+
+  .cost-row-amount {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink);
+    white-space: nowrap;
+    text-align: right;
+  }
+
+  .cost-row-amount.apostillum {
+    color: var(--confirmed);
+  }
+
+  /* ─── CLOSING CTA ─── */
+  .close-cta {
+    padding: 80px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .close-line {
+    font-family: var(--serif);
+    font-size: 42px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 32px;
+    max-width: 640px;
+  }
+
+  .close-line em {
+    font-style: italic;
+    color: var(--ink-mid);
+  }
+
+  .close-actions {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .cta-primary {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: var(--bg);
+    border: none;
+    padding: 16px 36px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+
+  .cta-primary:hover { opacity: 0.85; }
+
+  .cta-secondary {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2px;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 24px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .footer-wordmark {
+    font-family: var(--serif);
+    font-size: 16px;
+    color: var(--ink);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 20px;
+  }
+
+  .footer-link {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    text-decoration: none;
+  }
+
+  .footer-right {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .hero { padding: 64px 24px 56px; }
+    .hero-headline { font-size: 36px; }
+    .hero-watermark { font-size: 180px; }
+    .hero-bridge { font-size: 17px; }
+    .proof-strip { flex-direction: column; }
+    .proof-item { border-right: none; border-bottom: 1px solid var(--border); }
+    .asymmetry { padding: 48px 24px; }
+    .asymmetry-quote { font-size: 20px; }
+    .how { flex-direction: column; padding: 48px 24px; gap: 40px; }
+    .how-left { width: 100%; }
+    .cost-block { flex-direction: column; padding: 48px 24px; }
+    .cost-right { width: 100%; }
+    .close-cta { padding: 56px 24px; }
+    .close-line { font-size: 28px; }
+    footer { flex-direction: column; gap: 16px; padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="wordmark">
+    <span class="wordmark-name">Apostillum</span>
+    <div class="wordmark-dot"></div>
+    <span class="wordmark-tag">VERIFIED</span>
+  </div>
+  <button class="nav-cta">Take Control</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-watermark">apostil</div>
+  <h1 class="hero-headline">Whoever controls the record controls the truth.</h1>
+  <p class="hero-bridge">Every AI interaction. Every document. Sealed the moment it happens — before anyone else can touch it.</p>
+  <button class="hero-cta">Take Control</button>
+</section>
+
+<!-- LIVE TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <!-- first set -->
+    <div class="ticker-item"><div class="ticker-dot"></div>Hedera · Live</div>
+    <div class="ticker-item"><div class="ticker-dot"></div>Bitcoin Timechain · Confirmed</div>
+    <div class="ticker-item"><div class="ticker-dot"></div>RFC 3161 · Active</div>
+    <div class="ticker-item"><div class="ticker-dot neutral"></div>Sealed on your device</div>
+    <div class="ticker-item"><div class="ticker-dot neutral"></div>Never on ours</div>
+    <div class="ticker-item"><div class="ticker-dot neutral"></div>Three independent witnesses</div>
+    <div class="ticker-item"><div class="ticker-dot neutral"></div>apostillum.com</div>
+    <div class="ticker-item"><div class="ticker-dot neutral"></div>Verify any record · apostil.ly</div>
+    <!-- duplicate for seamless loop -->
+    <div class="ticker-item"><div class="ticker-dot"></div>Hedera · Live</div>
+    <div class="ticker-item"><div class="ticker-dot"></div>Bitcoin Timechain · Confirmed</div>
+    <div class="ticker-item"><div class="ticker-dot"></div>RFC 3161 · Active</div>
+    <div class="ticker-item"><div class="ticker-dot neutral"></div>Sealed on your device</div>
+    <div class="ticker-item"><div class="ticker-dot neutral"></div>Never on ours</div>
+    <div class="ticker-item"><div class="ticker-dot neutral"></div>Three independent witnesses</div>
+    <div class="ticker-item"><div class="ticker-dot neutral"></div>apostillum.com</div>
+    <div class="ticker-item"><div class="ticker-dot neutral"></div>Verify any record · apostil.ly</div>
+  </div>
+</div>
+
+<!-- PROOF STRIP -->
+<div class="proof-strip">
+  <div class="proof-item">
+    <div class="proof-label">The problem</div>
+    <div class="proof-value">Your AI provider has the record. You don't.</div>
+    <div class="proof-sub">Until now.</div>
+  </div>
+  <div class="proof-item">
+    <div class="proof-label">The architecture</div>
+    <div class="proof-value">Sealed on your device before it reaches anyone's servers.</div>
+    <div class="proof-sub">Not a policy. A technical fact.</div>
+  </div>
+  <div class="proof-item">
+    <div class="proof-label">The proof</div>
+    <div class="proof-value">Three independent timestamp witnesses. No single point of trust.</div>
+    <div class="proof-sub">Hedera · Bitcoin · RFC 3161</div>
+  </div>
+  <div class="proof-item">
+    <div class="proof-label">The result</div>
+    <div class="proof-value">A record that predates any dispute. Court-ready in one click.</div>
+    <div class="proof-sub">FRE Rule 902(14) · eIDAS · ESIGN Act</div>
+  </div>
+</div>
+
+<!-- THE ASYMMETRY -->
+<section class="asymmetry">
+  <div class="section-eyebrow">The structural problem</div>
+  <blockquote class="asymmetry-quote">
+    Your AI provider built the tool, holds the record, and controls what a court sees. They are the evidence and the witness simultaneously.
+  </blockquote>
+  <p class="asymmetry-body">
+    In the <em>New York Times v. OpenAI</em> case, OpenAI spent <strong>two and a half months</strong> preparing 20 million user chat logs before producing them under court order. Two and a half months of deciding what gets de-identified, what format is used, what context is included, and what is omitted.<br><br>
+    The professional whose conversations those were had no equivalent record. They had nothing that predated the provider's version.<br><br>
+    <strong>apostillum gives that ownership back to you — sealed before the preparation window begins.</strong>
+  </p>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="how-left">
+    <div class="section-eyebrow">How it works</div>
+    <h2 class="how-title">Five steps. You change nothing about how you work.</h2>
+    <p class="how-sub">The software runs locally and is invisible. You use your AI tools exactly as you always have.</p>
+  </div>
+  <div class="how-steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-content">
+        <div class="step-title">Use any AI tool normally</div>
+        <div class="step-desc">ChatGPT, Claude, Harvey, Gemini — anything. You change nothing about how you work.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-content">
+        <div class="step-title">Intercepted at the millisecond</div>
+        <div class="step-desc">A small piece of software running locally intercepts the conversation the moment it occurs. Nothing leaves your machine in readable form.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-content">
+        <div class="step-title">Encrypted on your device</div>
+        <div class="step-desc">The plaintext — the actual words — never leaves your machine. We store a locked box whose combination we were never given.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-content">
+        <div class="step-title">Three witnesses confirm the moment</div>
+        <div class="step-desc">A mathematical fingerprint is sent simultaneously to Hedera, Bitcoin via OpenTimestamps, and DigiCert RFC 3161. Three systems that have never shared infrastructure.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">05</div>
+      <div class="step-content">
+        <div class="step-title">Court-ready in one click</div>
+        <div class="step-desc">Full conversation, all three timestamp proofs, and a plain-English chain of custody written for a judge who has never heard the word blockchain.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE REAL COST -->
+<section class="cost-block" id="cost">
+  <div class="cost-left">
+    <div class="section-eyebrow">The real cost of not having this</div>
+    <h2 class="cost-title">One month of apostillum costs less than one hour of your time.</h2>
+    <p class="cost-body">
+      In 2025, over <strong>200 attorneys</strong> were sanctioned for AI-related misconduct. In <em>Johnson v. Dunn</em>, a federal judge disqualified three attorneys from a national firm — not fined them, <strong>disqualified</strong> them. The firm had explicit AI policies in place. The attorney who inserted the fake citations was the practice group leader responsible for enforcing those policies.<br><br>
+      Firm policies do not protect you. Records do.
+    </p>
+  </div>
+  <div class="cost-right">
+    <div class="cost-row">
+      <div class="cost-row-label">Digital forensic audit after litigation</div>
+      <div class="cost-row-amount">$25,000 – $75,000</div>
+    </div>
+    <div class="cost-row">
+      <div class="cost-row-label">Disqualification from a matter</div>
+      <div class="cost-row-amount">Career event</div>
+    </div>
+    <div class="cost-row">
+      <div class="cost-row-label">Malpractice policy gap for AI use</div>
+      <div class="cost-row-amount">Uninsured</div>
+    </div>
+    <div class="cost-row">
+      <div class="cost-row-label">apostillum — founding price</div>
+      <div class="cost-row-amount apostillum">$299 / month</div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING CTA -->
+<section class="close-cta">
+  <h2 class="close-line">We built it so that even we cannot lie.<br><em>That is not a feature. That is the product.</em></h2>
+  <div class="close-actions">
+    <button class="cta-primary">Take Control</button>
+    <a href="verify.html" class="cta-secondary">Verify a record →</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <span class="footer-wordmark">Apostillum</span>
+    <div class="footer-links">
+      <a href="#how" class="footer-link">How it works</a>
+      <a href="#cost" class="footer-link">Pricing</a>
+      <a href="verify.html" class="footer-link">Verify</a>
+      <a href="mailto:founder@apostillum.com" class="footer-link">Contact</a>
+    </div>
+  </div>
+  <div class="footer-right">apostillum.com · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8ee8e1fbe0eaebfc

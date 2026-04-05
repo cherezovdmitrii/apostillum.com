@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apostillum Verify — Independent Record Verification</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F2ED;
+    --ink: #1A1814;
+    --ink-mid: #4A4640;
+    --ink-light: #7A7570;
+    --ink-faint: #C4BFB8;
+    --confirmed: #2A5C3F;
+    --fail: #8b1a1a;
+    --border: #D4CFC8;
+    --mono: 'DM Mono', monospace;
+    --serif: 'EB Garamond', serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--serif);
+    min-height: 100vh;
+  }
+
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 48px;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(245,242,237,0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .wordmark {
+    display: flex;
+    align-items: baseline;
+    gap: 0;
+    text-decoration: none;
+  }
+
+  .wordmark-name {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    color: #1A1814;
+    line-height: 1;
+    margin-right: 10px;
+  }
+
+  .wordmark-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #8BCA7A;
+    flex-shrink: 0;
+    margin-right: 10px;
+    margin-bottom: 4px;
+    box-shadow: 0 0 0 2px rgba(139,202,122,0.2);
+  }
+
+  .wordmark-tag {
+    font-family: var(--mono);
+    font-size: 8px;
+    font-weight: 300;
+    letter-spacing: 0.22em;
+    color: #546A48;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .nav-link {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2px;
+  }
+
+  .main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 48px;
+  }
+
+  .page-title {
+    font-family: var(--serif);
+    font-size: 42px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+
+  .page-sub {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--ink-mid);
+    line-height: 1.5;
+    margin-bottom: 40px;
+  }
+
+  .search-box {
+    display: flex;
+    gap: 0;
+    margin-bottom: 12px;
+  }
+
+  .search-input {
+    flex: 1;
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 14px 18px;
+    border: 1px solid var(--border);
+    border-right: none;
+    background: #fff;
+    color: var(--ink);
+    outline: none;
+    letter-spacing: 0.02em;
+  }
+
+  .search-input::placeholder {
+    color: var(--ink-faint);
+  }
+
+  .search-input:focus {
+    border-color: var(--ink-light);
+  }
+
+  .search-btn {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: var(--bg);
+    border: 1px solid var(--ink);
+    padding: 14px 28px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+
+  .search-btn:hover { opacity: 0.85; }
+
+  .search-hint {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    margin-bottom: 48px;
+  }
+
+  /* Result */
+  .result {
+    display: none;
+    margin-top: 40px;
+  }
+
+  .result.visible { display: block; }
+
+  .result-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .result-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .result-dot.confirmed { background: #4CAF7C; box-shadow: 0 0 0 3px rgba(76,175,124,0.2); }
+  .result-dot.failed { background: #c44; box-shadow: 0 0 0 3px rgba(204,68,68,0.2); }
+
+  .result-status {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .result-status.confirmed { color: var(--confirmed); }
+  .result-status.failed { color: var(--fail); }
+
+  .result-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .result-row {
+    display: flex;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    gap: 24px;
+  }
+
+  .result-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    width: 160px;
+    flex-shrink: 0;
+    padding-top: 3px;
+  }
+
+  .result-value {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink);
+    word-break: break-all;
+    line-height: 1.5;
+  }
+
+  .result-value a {
+    color: var(--confirmed);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .loading {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-light);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 32px;
+    display: none;
+  }
+
+  .loading.visible { display: block; }
+
+  /* Info section */
+  .info {
+    margin-top: 64px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+  }
+
+  .info-title {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .info-text {
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--ink-mid);
+    max-width: 560px;
+  }
+
+  .info-text strong { color: var(--ink); font-weight: 500; }
+
+  footer {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-left {
+    font-family: var(--serif);
+    font-size: 16px;
+    color: var(--ink);
+  }
+
+  .footer-right {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .main { padding: 40px 24px; }
+    .page-title { font-size: 28px; }
+    .search-box { flex-direction: column; }
+    .search-input { border-right: 1px solid var(--border); border-bottom: none; }
+    .result-row { flex-direction: column; gap: 4px; }
+    .result-label { width: auto; }
+    footer { flex-direction: column; gap: 12px; padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="wordmark">
+    <span class="wordmark-name">Apostillum</span>
+    <div class="wordmark-dot"></div>
+    <span class="wordmark-tag">VERIFY</span>
+  </a>
+  <a href="index.html" class="nav-link">&larr; Back to home</a>
+</nav>
+
+<div class="main">
+  <h1 class="page-title">Verify a sealed record</h1>
+  <p class="page-sub">Enter a seal hash or Hedera sequence number to verify it against the public blockchain. No login required. No data stored.</p>
+
+  <div class="search-box">
+    <input type="text" class="search-input" id="queryInput" placeholder="Seal hash (e.g. a7f3d9e2...) or sequence number (e.g. 42)" autofocus>
+    <button class="search-btn" id="verifyBtn" onclick="doVerify()">Verify</button>
+  </div>
+  <div class="search-hint">Accepts: SHA-256 seal hash (full or partial) &middot; Hedera sequence number &middot; Topic/sequence (e.g. 0.0.8369360/42)</div>
+
+  <div class="loading" id="loading">Querying Hedera Mirror Node...</div>
+
+  <div class="result" id="result">
+    <div class="result-header">
+      <div class="result-dot" id="resultDot"></div>
+      <div class="result-status" id="resultStatus"></div>
+    </div>
+    <div class="result-grid" id="resultGrid"></div>
+  </div>
+
+  <div class="info">
+    <div class="info-title">What this proves</div>
+    <p class="info-text">
+      Every Apostillum record is anchored to the <strong>Hedera Consensus Service</strong> — a public, immutable ledger governed by Google, IBM, Boeing, and Deutsche Telekom. When you verify a seal hash here, you are querying that public ledger directly. <strong>Apostillum has no ability to alter, delete, or fabricate these records.</strong> The timestamp, the hash, and the sequence number are permanent facts of the blockchain.
+    </p>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-left">Apostillum</div>
+  <div class="footer-right">apostillum.com</div>
+</footer>
+
+<script>
+const TOPIC_ID = '0.0.8369360';
+const MIRROR = 'https://testnet.mirrornode.hedera.com';
+
+const input = document.getElementById('queryInput');
+input.addEventListener('keydown', function(e) { if (e.key === 'Enter') doVerify(); });
+
+async function doVerify() {
+  const query = input.value.trim();
+  if (!query) return;
+
+  const loading = document.getElementById('loading');
+  const result = document.getElementById('result');
+  loading.classList.add('visible');
+  result.classList.remove('visible');
+
+  try {
+    let data;
+    if (/^\d+$/.test(query)) {
+      data = await verifyBySeq(TOPIC_ID, parseInt(query));
+    } else if (query.includes('/')) {
+      const parts = query.split('/');
+      data = await verifyBySeq(parts[0], parseInt(parts[1]));
+    } else {
+      data = await verifyByHash(TOPIC_ID, query);
+    }
+    showResult(data);
+  } catch (e) {
+    showResult({ found: false, error: e.message });
+  } finally {
+    loading.classList.remove('visible');
+  }
+}
+
+async function verifyBySeq(topic, seq) {
+  const resp = await fetch(MIRROR + '/api/v1/topics/' + topic + '/messages?sequencenumber=' + seq);
+  const data = await resp.json();
+  if (!data.messages || data.messages.length === 0) return { found: false, error: 'Message not found on Hedera' };
+  return parseMsg(data.messages[0], topic);
+}
+
+async function verifyByHash(topic, hash) {
+  const resp = await fetch(MIRROR + '/api/v1/topics/' + topic + '/messages?order=desc&limit=100');
+  const data = await resp.json();
+  for (const msg of (data.messages || [])) {
+    const payload = JSON.parse(atob(msg.message));
+    if ((payload.seal_sha256 || '').startsWith(hash)) return parseMsg(msg, topic);
+  }
+  return { found: false, error: 'Seal hash not found in recent messages. Try the full hash or sequence number.' };
+}
+
+function parseMsg(msg, topic) {
+  const payload = JSON.parse(atob(msg.message));
+  const ts = msg.consensus_timestamp;
+  const secs = parseFloat(ts);
+  const date = new Date(secs * 1000);
+  return {
+    found: true,
+    topic: topic,
+    sequence: msg.sequence_number,
+    timestamp: ts,
+    date: date.toISOString().replace('T', ' ').substring(0, 19) + ' UTC',
+    payer: msg.payer_account_id || '',
+    seal_sha256: payload.seal_sha256 || '',
+    seal_sha3_256: payload.seal_sha3_256 || '',
+    attestation_id: payload.attestation_id || '',
+    schema: payload.schema || '',
+  };
+}
+
+function showResult(data) {
+  const result = document.getElementById('result');
+  const dot = document.getElementById('resultDot');
+  const status = document.getElementById('resultStatus');
+  const grid = document.getElementById('resultGrid');
+
+  if (data.found) {
+    dot.className = 'result-dot confirmed';
+    status.className = 'result-status confirmed';
+    status.textContent = 'Record found on Hedera blockchain';
+
+    const hashscan = 'https://hashscan.io/testnet/topic/' + data.topic + '/' + data.sequence;
+    grid.innerHTML =
+      row('Seal SHA-256', data.seal_sha256) +
+      row('Seal SHA-3-256', data.seal_sha3_256) +
+      row('Consensus Timestamp', data.date) +
+      row('Hedera Topic', data.topic) +
+      row('Sequence Number', String(data.sequence)) +
+      row('Payer Account', data.payer) +
+      row('Attestation ID', data.attestation_id) +
+      row('Verify on HashScan', '<a href="' + hashscan + '" target="_blank">' + hashscan + '</a>');
+  } else {
+    dot.className = 'result-dot failed';
+    status.className = 'result-status failed';
+    status.textContent = 'Not found';
+    grid.innerHTML = row('Error', data.error || 'Unknown error');
+  }
+
+  result.classList.add('visible');
+}
+
+function row(label, value) {
+  return '<div class="result-row"><div class="result-label">' + label + '</div><div class="result-value">' + value + '</div></div>';
+}
+</script>
+</body>
+</html>

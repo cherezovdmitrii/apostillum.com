@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Apostillum Verify — Independent Record Verification</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='3' fill='%231A1814'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%238BCA7A'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -12,7 +13,7 @@
     --ink-mid: #4A4640;
     --ink-light: #7A7570;
     --ink-faint: #C4BFB8;
-    --confirmed: #2A5C3F;
+    --confirmed: #3D5C35;
     --fail: #8b1a1a;
     --border: #D4CFC8;
     --mono: 'DM Mono', monospace;
@@ -52,7 +53,7 @@
   .wordmark-name {
     font-family: var(--serif);
     font-size: 24px;
-    font-weight: 400;
+    font-weight: 500;
     letter-spacing: -0.01em;
     color: #1A1814;
     line-height: 1;
@@ -60,8 +61,8 @@
   }
 
   .wordmark-dot {
-    width: 5px;
-    height: 5px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     background: #8BCA7A;
     flex-shrink: 0;
@@ -75,7 +76,7 @@
     font-size: 8px;
     font-weight: 300;
     letter-spacing: 0.22em;
-    color: #546A48;
+    color: #3D5C35;
     text-transform: uppercase;
     line-height: 1;
   }
@@ -188,7 +189,7 @@
     flex-shrink: 0;
   }
 
-  .result-dot.confirmed { background: #4CAF7C; box-shadow: 0 0 0 3px rgba(76,175,124,0.2); }
+  .result-dot.confirmed { background: #8BCA7A; box-shadow: 0 0 0 3px rgba(139,202,122,0.2); }
   .result-dot.failed { background: #c44; box-shadow: 0 0 0 3px rgba(204,68,68,0.2); }
 
   .result-status {

@@ -777,6 +777,14 @@ footer {
 }
 .f-left { display: flex; align-items: center; gap: 20px; }
 .f-name { font-family: var(--serif); font-size: 15px; color: var(--ink); }
+.f-tagline {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--soft);
+  margin-left: 16px;
+}
 .f-links { display: flex; gap: 20px; }
 .f-links a {
   font-family: var(--mono);
@@ -829,6 +837,7 @@ footer {
   .n-tag { display: none; }
   .hero-links { flex-direction: column; gap: 10px; }
   .hero-sep { display: none; }
+  .f-tagline { display: none; }
   .ticker-track { flex-direction: column; align-items: center; gap: 6px; }
   .ticker-item { border-right: none; padding: 4px 0; }
 }
@@ -984,7 +993,7 @@ footer {
       <div class="step"><div class="step-num">02</div><div><div class="step-title">Captured at the moment of creation</div><div class="step-desc">A small piece of software running locally intercepts the conversation the moment it occurs. Nothing leaves your machine in readable form.</div></div></div>
       <div class="step"><div class="step-num">03</div><div><div class="step-title">Encrypted on your device</div><div class="step-desc">The plaintext &mdash; the actual words &mdash; never leaves your machine. We store a locked box whose combination we were never given.</div></div></div>
       <div class="step"><div class="step-num">04</div><div><div class="step-title">Three witnesses confirm the moment</div><div class="step-desc">A mathematical fingerprint is sent simultaneously to Hedera, Bitcoin via OpenTimestamps, and DigiCert RFC 3161. Three systems that have never shared infrastructure.</div></div></div>
-      <div class="step"><div class="step-num">05</div><div><div class="step-title">Structured for court in one click.</div><div class="step-desc">Full conversation, all three timestamp proofs, and a plain-English chain of custody written for a judge who has never heard the word blockchain. Because timestamps live on public blockchains and encrypted records are stored on your device, your proof remains independently verifiable regardless of any party's continued existence.</div></div></div>
+      <div class="step"><div class="step-num">05</div><div><div class="step-title">Structured for court in one click.</div><div class="step-desc">Full conversation, all three timestamp proofs, and a plain-English chain of custody written for a judge who has never heard the word blockchain. Because timestamps live on public blockchains and encrypted records are stored on your device, your proof remains independently verifiable for a minimum of seven years, regardless of any party's continued existence.</div></div></div>
     </div>
   </div>
 </section>
@@ -1057,7 +1066,7 @@ footer {
       </div>
       <div class="faq-item">
         <div class="faq-q">"What if Apostillum shuts down?"</div>
-        <div class="faq-a">Your records are encrypted on your device &mdash; not ours. The timestamps are written to public blockchains that will outlast any company. Even if Apostillum ceased to exist tomorrow, <strong>your records remain independently verifiable by any third party, forever.</strong> We designed the system so that our survival is not required for your records to be valid.</div>
+        <div class="faq-a">Your records are encrypted on your device &mdash; not ours. The timestamps are written to public blockchains that will outlast any company. Even if Apostillum ceased to exist tomorrow, <strong>your records remain independently verifiable by any third party, forever.</strong> We designed the system so that our survival is not required for your records to be valid. No vendor lock-in. No dependency. The proof stands alone.</div>
       </div>
     </div>
   </div>
@@ -1077,7 +1086,7 @@ footer {
 
 <footer>
   <div class="f-left">
-    <span class="f-name">Apostillum</span>
+    <span class="f-name">Apostillum</span><span class="f-tagline">The record of truth for the AI age</span>
     <div class="f-links">
       <a href="#how">How it works</a>
       <a href="#cost">Pricing</a>

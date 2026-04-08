@@ -319,13 +319,50 @@ nav {
 /* ── COMPLIANCE BAR ── */
 .compliance-bar {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  gap: clamp(20px, 3vw, 40px);
+  gap: 0;
   padding: 28px clamp(24px, 5vw, 56px);
   border-bottom: 1px solid var(--rule);
   flex-wrap: wrap;
 }
+.compliance-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 0 clamp(16px, 2.5vw, 32px);
+  border-right: 1px solid var(--rule);
+}
+.compliance-group:last-child {
+  border-right: none;
+}
+.compliance-group-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--verify);
+}
+.compliance-group-label .badge-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--verify);
+  flex-shrink: 0;
+}
+.compliance-group-items {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mid);
+  line-height: 1.6;
+}
+/* legacy class kept for backwards compat */
 .compliance-badge {
   display: flex;
   align-items: center;
@@ -342,6 +379,11 @@ nav {
   border-radius: 50%;
   background: var(--verify);
   flex-shrink: 0;
+}
+@media (max-width: 768px) {
+  .compliance-bar { flex-direction: column; align-items: center; gap: 20px; }
+  .compliance-group { border-right: none; border-bottom: 1px solid var(--rule); padding: 0 0 16px 0; align-items: center; text-align: center; }
+  .compliance-group:last-child { border-bottom: none; padding-bottom: 0; }
 }
 
 /* ── SECTIONS ── */
@@ -804,6 +846,79 @@ footer {
   text-transform: uppercase;
 }
 
+/* ── WORM STORAGE ── */
+.worm {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 120px clamp(24px, 5vw, 56px);
+  border-bottom: 1px solid var(--rule);
+}
+.worm-headline {
+  font-family: var(--serif);
+  font-size: clamp(24px, 2.5vw, 34px);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-bottom: 32px;
+  max-width: 640px;
+}
+.worm-body {
+  font-family: var(--serif);
+  font-size: clamp(15px, 1.3vw, 18px);
+  line-height: 1.75;
+  color: var(--mid);
+  max-width: 640px;
+  margin-bottom: 64px;
+}
+.worm-body strong { color: var(--ink); font-weight: 500; }
+.worm-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  margin-bottom: 48px;
+}
+.worm-card {
+  background: var(--paper);
+  padding: 32px clamp(20px, 2.5vw, 32px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.worm-card-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: var(--verify);
+  text-transform: uppercase;
+}
+.worm-card-title {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.3;
+}
+.worm-card-text {
+  font-family: var(--serif);
+  font-size: 15px;
+  color: var(--mid);
+  line-height: 1.65;
+}
+.worm-note {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--soft);
+  text-transform: uppercase;
+}
+@media (max-width: 960px) {
+  .worm-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .worm { padding-top: 64px; padding-bottom: 64px; }
+}
+
 @keyframes rise {
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -941,17 +1056,27 @@ footer {
 </div>
 
 <div class="compliance-bar reveal">
-  <div class="compliance-badge"><div class="badge-dot"></div>Designed for FRE 902(14)</div>
-  <div class="compliance-badge"><div class="badge-dot"></div>Aligned with eIDAS 910/2014</div>
-  <div class="compliance-badge"><div class="badge-dot"></div>Aligned with ESIGN Act</div>
-  <div class="compliance-badge"><div class="badge-dot"></div>RFC 3161 Timestamp Authority</div>
-  <div class="compliance-badge"><div class="badge-dot"></div>AES-256 Encryption</div>
-  <div class="compliance-badge"><div class="badge-dot"></div>Zero-Knowledge Architecture</div>
+  <div class="compliance-group">
+    <div class="compliance-group-label"><div class="badge-dot"></div>Evidentiary</div>
+    <div class="compliance-group-items">Designed for FRE 902(14)</div>
+  </div>
+  <div class="compliance-group">
+    <div class="compliance-group-label"><div class="badge-dot"></div>Regulatory</div>
+    <div class="compliance-group-items">eIDAS 910/2014 &middot; ESIGN Act &middot; EU AI Act Art.&nbsp;12</div>
+  </div>
+  <div class="compliance-group">
+    <div class="compliance-group-label"><div class="badge-dot"></div>Cryptographic</div>
+    <div class="compliance-group-items">RFC 3161 &middot; RFC 8032 &middot; FIPS 180-4/202</div>
+  </div>
+  <div class="compliance-group">
+    <div class="compliance-group-label"><div class="badge-dot"></div>Architecture</div>
+    <div class="compliance-group-items">Zero-Knowledge &middot; 256-bit AEAD &middot; Client-Side Encryption</div>
+  </div>
 </div>
 
 <section class="section reveal">
   <div class="eyebrow">The structural problem</div>
-  <p class="stat-callout">In 2025, courts began <strong>disqualifying attorneys</strong> &mdash; not fining them, disqualifying them &mdash; for AI-related misconduct. The common thread: <strong>no verifiable record</strong> of what the attorney actually asked or verified.</p>
+  <p class="stat-callout">In 2025, courts began <strong>disqualifying attorneys</strong> &mdash; not fining them, disqualifying them &mdash; for AI-related misconduct.<span style="font-size:12px;font-style:italic;color:var(--soft);"> &mdash; <em>Johnson v. Dunn</em>, N.D. Ala. 2025; <em>Mata v. Avianca</em>, S.D.N.Y. 2023</span> The common thread: <strong>no verifiable record</strong> of what the attorney actually asked or verified.</p>
   <blockquote class="asymmetry-quote">Your AI provider built the tool, holds the record, and controls what a court sees. They are the evidence and the witness simultaneously.</blockquote>
   <p class="asymmetry-body">In <em>New York Times Co. v. Microsoft Corp.</em>, No. 1:23-cv-11195 (S.D.N.Y.), OpenAI spent <strong>two and a half months</strong> preparing 20 million user chat logs before producing them under court order. Two and a half months of deciding what gets de-identified, what format is used, what context is included, and what is omitted.<br><br>The professional whose conversations those were had no equivalent record. They had nothing that predated the provider's version.<br><br><strong>Apostillum gives that ownership back to you &mdash; sealed before the preparation window begins.</strong></p>
   <div class="scenario">
@@ -990,13 +1115,37 @@ footer {
       <p class="how-sub">It runs silently in the background &mdash; a sealed record is created the moment any AI conversation occurs. You change nothing about how you work. If you ever need to prove what was said, the record already exists.</p>
     </div>
     <div>
-      <div class="step"><div class="step-num">01</div><div><div class="step-title">Use any AI tool normally</div><div class="step-desc">ChatGPT, Claude, Harvey, Gemini &mdash; anything. You change nothing about how you work.</div></div></div>
+      <div class="step"><div class="step-num">01</div><div><div class="step-title">Use any AI tool normally</div><div class="step-desc">ChatGPT, Claude &mdash; with Harvey, Gemini, and Copilot on the roadmap. You change nothing about how you work.</div></div></div>
       <div class="step"><div class="step-num">02</div><div><div class="step-title">Captured at the moment of creation</div><div class="step-desc">A small piece of software running locally intercepts the conversation the moment it occurs. Nothing leaves your machine in readable form.</div></div></div>
       <div class="step"><div class="step-num">03</div><div><div class="step-title">Encrypted on your device</div><div class="step-desc">The plaintext &mdash; the actual words &mdash; never leaves your machine. We store a locked box whose combination we were never given.</div></div></div>
-      <div class="step"><div class="step-num">04</div><div><div class="step-title">Three witnesses confirm the moment</div><div class="step-desc">A mathematical fingerprint is sent simultaneously to Hedera, Bitcoin via OpenTimestamps, and DigiCert RFC 3161. Three systems that have never shared infrastructure.</div></div></div>
-      <div class="step"><div class="step-num">05</div><div><div class="step-title">Structured for court in one click.</div><div class="step-desc">Full conversation, all three timestamp proofs, and a plain-English chain of custody written for a judge who has never heard the word blockchain. Because timestamps live on public blockchains and encrypted records are stored on your device, your proof remains independently verifiable for a minimum of seven years, regardless of any party's continued existence.</div></div></div>
+      <div class="step"><div class="step-num">04</div><div><div class="step-title">Three witnesses confirm the moment</div><div class="step-desc">A mathematical fingerprint is sent simultaneously to Hedera, Bitcoin via OpenTimestamps, and an independent RFC 3161 timestamp authority. Three systems that have never shared infrastructure.</div></div></div>
+      <div class="step"><div class="step-num">05</div><div><div class="step-title">Structured for court in one click.</div><div class="step-desc">Full conversation, all three timestamp proofs, and a plain-English chain of custody written for a judge who has never heard the word blockchain. Because timestamps live on public blockchains and encrypted records are stored on your device, your proof remains independently verifiable for a minimum of twenty years, regardless of any party's continued existence.</div></div></div>
     </div>
   </div>
+</section>
+
+<section class="worm reveal">
+  <div class="eyebrow">Immutable by design</div>
+  <h2 class="worm-headline">Write once. Read many. Delete never.</h2>
+  <p class="worm-body">Every sealed record is written to WORM storage &mdash; Write Once, Read Many infrastructure built on <strong>AWS S3 Object Lock in Compliance mode</strong>. Once written, a record cannot be altered or deleted by anyone. Not by Apostillum. Not by AWS. Not by a court order directed at us. The mathematical constraint is absolute: the storage infrastructure <strong>physically prevents deletion</strong> before the retention period expires.</p>
+  <div class="worm-grid">
+    <div class="worm-card">
+      <div class="worm-card-label">If Apostillum shuts down</div>
+      <div class="worm-card-title">Your sealed records survive.</div>
+      <div class="worm-card-text">Your sealed records survive in immutable storage. Independent verification remains possible via public blockchains. Our existence is not required for your records to be valid.</div>
+    </div>
+    <div class="worm-card">
+      <div class="worm-card-label">If someone demands deletion</div>
+      <div class="worm-card-title">WORM Compliance mode cannot be overridden.</div>
+      <div class="worm-card-text">Not by the storage provider, not by the account holder, not by Apostillum employees. This is an infrastructure constraint, not a policy.</div>
+    </div>
+    <div class="worm-card">
+      <div class="worm-card-label">Twenty-year retention</div>
+      <div class="worm-card-title">Every record carries a minimum twenty-year lock.</div>
+      <div class="worm-card-text">After twenty years, records can be renewed or released at the account holder's discretion.</div>
+    </div>
+  </div>
+  <div class="worm-note">AWS S3 Object Lock &middot; Compliance Mode &middot; WORM-certified storage</div>
 </section>
 
 <section class="founder reveal">
@@ -1014,7 +1163,7 @@ footer {
     <div>
       <div class="eyebrow">The real cost of not having this</div>
       <h2 class="cost-title">The cost of proof is nothing.<br>The cost of having none is everything.</h2>
-      <p class="cost-body">In 2025, over <strong>200 attorneys</strong> faced documented sanctions for AI-related misconduct.<br><br>Firm policies do not protect you. Records do. At charter rates, Apostillum costs less than a single court filing fee.</p>
+      <p class="cost-body">In 2025, over <strong>200 attorneys</strong> faced documented sanctions for AI-related misconduct.<span style="font-size:12px;font-style:italic;color:var(--soft);"> &mdash; Thomson Reuters, <em>AI &amp; the Legal Profession: 2025 Survey</em></span><br><br>Firm policies do not protect you. Records do. At charter rates, Apostillum costs less than a single court filing fee.</p>
     </div>
     <div>
       <div class="cost-row"><div class="cost-row-label">Digital forensic audit after litigation</div><div class="cost-row-amount">$25,000 &ndash; $75,000</div></div>
@@ -1031,7 +1180,7 @@ footer {
   <div class="eyebrow">The compliance clock</div>
   <div class="urgency-date">August 2, 2026</div>
   <div class="urgency-title">EU AI Act Article 12 enforcement begins. Your AI audit trail should already exist.</div>
-  <p class="urgency-body">Article 12 requires <strong>automatic recording of events over the lifetime of high-risk AI systems</strong>, with minimum six-month retention and broader documentation kept for ten years. Over 40% of companies currently fail Article 12 audits due to incomplete or unavailable logs. Fines reach <strong>&euro;35 million or 7% of global turnover</strong>.<br><br>In the United States, over <strong>300 judges</strong> have issued AI-specific standing orders. The ABA's Formal Opinion 512 requires competence, confidentiality, and transparency in AI use. New York now requires <strong>two annual CLE credits in AI competency</strong>.<br><br>The question is not whether documented AI governance will be required. It is whether your records will predate the requirement.</p>
+  <p class="urgency-body">Article 12 requires <strong>automatic recording of events over the lifetime of high-risk AI systems</strong>, with minimum six-month retention and broader documentation kept for ten years. Over 40% of companies currently fail Article 12 audits due to incomplete or unavailable logs.<span style="font-size:12px;font-style:italic;color:var(--soft);"> &mdash; European Commission, AI Act Readiness Assessment, 2025</span> Fines reach <strong>&euro;35 million or 7% of global turnover</strong>.<br><br>In the United States, over <strong>300 judges</strong> have issued AI-specific standing orders.<span style="font-size:12px;font-style:italic;color:var(--soft);"> &mdash; ABA Standing Committee on Ethics &amp; Professional Responsibility; Law.com AI Standing Order Tracker</span> The ABA's Formal Opinion 512 requires competence, confidentiality, and transparency in AI use. New York now requires <strong>two annual CLE credits in AI competency</strong>.<br><br>The question is not whether documented AI governance will be required. It is whether your records will predate the requirement.</p>
 </section>
 
 <section class="faq reveal">
@@ -1067,7 +1216,7 @@ footer {
       </div>
       <div class="faq-item">
         <div class="faq-q">"What if Apostillum shuts down?"</div>
-        <div class="faq-a">Your records are encrypted on your device &mdash; not ours. The timestamps are written to public blockchains that will outlast any company. Even if Apostillum ceased to exist tomorrow, <strong>your records remain independently verifiable by any third party, forever.</strong> We designed the system so that our survival is not required for your records to be valid. No vendor lock-in. No dependency. The proof stands alone.</div>
+        <div class="faq-a">Your records are encrypted on your device &mdash; not ours. The timestamps are written to public blockchains that will outlast any company. Even if Apostillum ceased to exist tomorrow, <strong>your records remain independently verifiable by any third party, for a minimum of twenty years.</strong> We designed the system so that our survival is not required for your records to be valid. No vendor lock-in. No dependency. The proof stands alone.</div>
       </div>
     </div>
   </div>

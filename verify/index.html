@@ -331,12 +331,12 @@
   <p class="page-sub">Enter a seal hash or Hedera sequence number to verify it against the public blockchain. No login required. No data stored.</p>
 
   <div class="search-box">
-    <input type="text" class="search-input" id="queryInput" placeholder="Seal hash (e.g. a7f3d9e2...) or sequence number (e.g. 42)" autofocus>
+    <input type="text" class="search-input" id="queryInput" placeholder="Enter a seal hash or sequence number" autofocus>
     <button class="search-btn" id="verifyBtn" onclick="doVerify()">Verify</button>
   </div>
-  <div class="search-hint">Accepts: SHA-256 seal hash (full or partial) &middot; Hedera sequence number &middot; Topic/sequence (e.g. 0.0.8369360/42)</div>
+  <div class="search-hint">Accepts: SHA-256 seal hash (full or partial) &middot; Sequence number</div>
 
-  <div class="loading" id="loading">Querying Hedera Mirror Node...</div>
+  <div class="loading" id="loading">Verifying record...</div>
 
   <div class="result" id="result">
     <div class="result-header">
@@ -360,8 +360,8 @@
 </footer>
 
 <script>
-const TOPIC_ID = '0.0.8369360';
-const MIRROR = 'https://testnet.mirrornode.hedera.com';
+const TOPIC_ID = '0.0.8369360'; // TODO: move to backend API - do not expose in client
+const MIRROR = 'https://testnet.mirrornode.hedera.com'; // TODO: proxy through backend API
 
 const input = document.getElementById('queryInput');
 input.addEventListener('keydown', function(e) { if (e.key === 'Enter') doVerify(); });
@@ -379,9 +379,6 @@ async function doVerify() {
     let data;
     if (/^\d+$/.test(query)) {
       data = await verifyBySeq(TOPIC_ID, parseInt(query));
-    } else if (query.includes('/')) {
-      const parts = query.split('/');
-      data = await verifyBySeq(parts[0], parseInt(parts[1]));
     } else {
       data = await verifyByHash(TOPIC_ID, query);
     }
@@ -397,7 +394,7 @@ async function verifyBySeq(topic, seq) {
   const resp = await fetch(MIRROR + '/api/v1/topics/' + topic + '/messages?sequencenumber=' + seq);
   const data = await resp.json();
   if (!data.messages || data.messages.length === 0) return { found: false, error: 'Message not found on Hedera' };
-  return parseMsg(data.messages[0], topic);
+  return parseMsg(data.messages[0]);
 }
 
 async function verifyByHash(topic, hash) {
@@ -405,27 +402,24 @@ async function verifyByHash(topic, hash) {
   const data = await resp.json();
   for (const msg of (data.messages || [])) {
     const payload = JSON.parse(atob(msg.message));
-    if ((payload.seal_sha256 || '').startsWith(hash)) return parseMsg(msg, topic);
+    if ((payload.seal_sha256 || '').startsWith(hash)) return parseMsg(msg);
   }
   return { found: false, error: 'Seal hash not found in recent messages. Try the full hash or sequence number.' };
 }
 
-function parseMsg(msg, topic) {
+function parseMsg(msg) {
   const payload = JSON.parse(atob(msg.message));
   const ts = msg.consensus_timestamp;
   const secs = parseFloat(ts);
   const date = new Date(secs * 1000);
   return {
     found: true,
-    topic: topic,
     sequence: msg.sequence_number,
     timestamp: ts,
     date: date.toISOString().replace('T', ' ').substring(0, 19) + ' UTC',
-    payer: msg.payer_account_id || '',
     seal_sha256: payload.seal_sha256 || '',
     seal_sha3_256: payload.seal_sha3_256 || '',
     attestation_id: payload.attestation_id || '',
-    schema: payload.schema || '',
   };
 }
 
@@ -440,16 +434,12 @@ function showResult(data) {
     status.className = 'result-status confirmed';
     status.textContent = 'Record found on Hedera blockchain';
 
-    const hashscan = 'https://hashscan.io/testnet/topic/' + data.topic + '/' + data.sequence;
     grid.innerHTML =
       row('Seal SHA-256', data.seal_sha256) +
       row('Seal SHA-3-256', data.seal_sha3_256) +
       row('Consensus Timestamp', data.date) +
-      row('Hedera Topic', data.topic) +
       row('Sequence Number', String(data.sequence)) +
-      row('Payer Account', data.payer) +
-      row('Attestation ID', data.attestation_id) +
-      row('Verify on HashScan', '<a href="' + hashscan + '" target="_blank">' + hashscan + '</a>');
+      row('Attestation ID', data.attestation_id);
   } else {
     dot.className = 'result-dot failed';
     status.className = 'result-status failed';

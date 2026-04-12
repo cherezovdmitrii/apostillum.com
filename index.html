@@ -1089,7 +1089,7 @@ footer {
   <div class="proof-item">
     <div class="proof-label">The proof</div>
     <div class="proof-value">Three independent timestamp witnesses. No single point of trust.</div>
-    <div class="proof-sub">Hedera &middot; Bitcoin &middot; RFC 3161 &mdash; anyone can verify</div>
+    <div class="proof-sub">Hedera &middot; Bitcoin &middot; RFC 3161 &mdash; independently verifiable on public blockchains</div>
   </div>
   <div class="proof-item">
     <div class="proof-label">The standard</div>
@@ -1154,7 +1154,7 @@ footer {
   <div class="how-grid">
     <div>
       <div class="eyebrow">How it works</div>
-      <h2 class="how-title">Six steps. You change nothing about how you work.</h2>
+      <h2 class="how-title">Here is how it works. You change nothing about how you work.</h2>
       <p class="how-sub">It runs silently in the background &mdash; a sealed record is created the moment any AI conversation occurs. You change nothing about how you work. If you ever need to prove what was said, the record already exists.</p>
     </div>
     <div>
@@ -1162,7 +1162,7 @@ footer {
       <div class="step"><div class="step-num">02</div><div><div class="step-title">Captured at the moment of creation</div><div class="step-desc">A small piece of software running locally seals the conversation the moment it occurs. Nothing leaves your machine in readable form.</div></div></div>
       <div class="step"><div class="step-num">03</div><div><div class="step-title">Encrypted on your device</div><div class="step-desc">The plaintext &mdash; the actual words &mdash; never leaves your machine. We store a locked box whose combination we were never given.</div></div></div>
       <div class="step"><div class="step-num">04</div><div><div class="step-title">Three witnesses confirm the moment</div><div class="step-desc">A mathematical fingerprint is sent simultaneously to Hedera, Bitcoin via OpenTimestamps, and an independent RFC 3161 timestamp authority. Three systems that have never shared infrastructure.</div></div></div>
-      <div class="step"><div class="step-num">05</div><div><div class="step-title">Encrypted data locked in immutable storage</div><div class="step-desc">An unbreakable encrypted blob of your data is sent to Amazon Web Services Write Once, Read Many storage (AWS WORM) &mdash; the world's largest cloud infrastructure, operating across dozens of data centers on six continents. Once written, the record is physically locked for a minimum of twenty years. Not even Amazon Web Services, Apostillum, or a court order directed at us can alter or delete it before the retention period expires. This is not a policy. It is an infrastructure constraint enforced at the hardware level.</div></div></div>
+      <div class="step"><div class="step-num">05</div><div><div class="step-title">Encrypted data locked in immutable storage</div><div class="step-desc">An unbreakable encrypted blob of your data is sent to Amazon Web Services Write Once, Read Many storage (AWS WORM) &mdash; the world's largest cloud infrastructure, operating across dozens of data centers on six continents. Once written, the record cannot be deleted or overwritten through any API operation during the retention period &mdash; a minimum of twenty years. Not even Amazon Web Services, Apostillum, or a court order directed at us can alter or delete it before the retention period expires. This is not a policy. It is enforced at the infrastructure level.</div></div></div>
       <div class="step"><div class="step-num">06</div><div><div class="step-title">Structured for court in one click.</div><div class="step-desc">Full conversation, all three timestamp proofs, WORM storage confirmation, and a plain-English chain of custody written for a judge who has never heard the word blockchain. Because timestamps live on public blockchains and encrypted records are locked in Amazon's immutable storage, your proof remains independently verifiable for a minimum of twenty years, regardless of any party's continued existence.</div></div></div>
     </div>
   </div>
@@ -1171,7 +1171,7 @@ footer {
 <section class="worm reveal">
   <div class="eyebrow">Immutable by design</div>
   <h2 class="worm-headline">Write once. Read many. Delete never.</h2>
-  <p class="worm-body">Every sealed record is written to WORM storage &mdash; Write Once, Read Many infrastructure provided by <strong>Amazon Web Services</strong>, the world's largest cloud platform, operating across dozens of data centers on six continents. The storage uses <strong>Amazon S3 Object Lock in Compliance mode</strong> &mdash; a configuration that physically prevents any record from being altered or deleted before its retention period expires. Not by Apostillum. Not by Amazon Web Services. Not by a court order directed at either party. The constraint is absolute: it is enforced at the infrastructure level, not by policy.</p>
+  <p class="worm-body">Every sealed record is written to WORM storage &mdash; Write Once, Read Many infrastructure provided by <strong>Amazon Web Services</strong>, the world's largest cloud platform, operating across dozens of data centers on six continents. The storage uses <strong>Amazon S3 Object Lock in Compliance mode</strong> &mdash; a configuration where no record can be deleted or overwritten through any API operation before its retention period expires. Not by Apostillum. Not by Amazon Web Services. Not by a court order directed at either party. The constraint is absolute: it is enforced at the infrastructure level, not by policy.</p>
   <div class="worm-grid">
     <div class="worm-card">
       <div class="worm-card-label">If Apostillum shuts down</div>
@@ -1238,7 +1238,7 @@ footer {
       </div>
       <div class="faq-item">
         <div class="faq-q">"What happens to my data? Is it private?"</div>
-        <div class="faq-a">Your content is encrypted before it leaves your device. The encryption key is split so that no single party &mdash; including Apostillum &mdash; can access the data alone. <strong>Our employees cannot read your conversations. Not today, not if we're acquired, not ever.</strong> The fingerprint we write to the blockchain contains no readable content &mdash; it's a mathematical hash, like a serial number.</div>
+        <div class="faq-a">Your conversations are encrypted on your device with a key only you hold &mdash; it never leaves your machine. For long-term archival, the archive is protected by a separate key split among independent custodians, so that no single party &mdash; including Apostillum &mdash; can access the archive alone. <strong>Our employees cannot read your conversations. Not today, not if we're acquired, not ever.</strong> The fingerprint we write to the blockchain contains no readable content &mdash; it's a mathematical hash, like a serial number.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q">"Can't I just screenshot my conversations?"</div>

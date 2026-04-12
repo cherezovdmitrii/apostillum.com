@@ -360,99 +360,119 @@
 </footer>
 
 <script>
-const TOPIC_ID = '0.0.8369360'; // TODO: move to backend API - do not expose in client
-const MIRROR = 'https://testnet.mirrornode.hedera.com'; // TODO: proxy through backend API
+const API = 'https://app.apostillum.com';
 
 const input = document.getElementById('queryInput');
 input.addEventListener('keydown', function(e) { if (e.key === 'Enter') doVerify(); });
 
+function addRow(container, label, value) {
+  var row = document.createElement('div');
+  row.className = 'result-row';
+  var labelEl = document.createElement('div');
+  labelEl.className = 'result-label';
+  labelEl.textContent = label;
+  var valueEl = document.createElement('div');
+  valueEl.className = 'result-value';
+  valueEl.textContent = value;
+  row.appendChild(labelEl);
+  row.appendChild(valueEl);
+  container.appendChild(row);
+}
+
 async function doVerify() {
-  const query = input.value.trim();
+  var query = input.value.trim();
   if (!query) return;
 
-  const loading = document.getElementById('loading');
-  const result = document.getElementById('result');
+  var loading = document.getElementById('loading');
+  var result = document.getElementById('result');
   loading.classList.add('visible');
   result.classList.remove('visible');
 
   try {
-    let data;
-    if (/^\d+$/.test(query)) {
-      data = await verifyBySeq(TOPIC_ID, parseInt(query));
-    } else {
-      data = await verifyByHash(TOPIC_ID, query);
+    var resp = await fetch(API + '/api/v1/verify?q=' + encodeURIComponent(query));
+
+    if (resp.status === 429) {
+      showError('Too many requests. Please wait a moment and try again.');
+      return;
     }
+    if (resp.status === 400) {
+      showError('Invalid input. Please check your seal hash or sequence number.');
+      return;
+    }
+    if (resp.status >= 500) {
+      showError('Server error. Please try again later.');
+      return;
+    }
+    if (!resp.ok) {
+      showError('Verification failed. Please try again.');
+      return;
+    }
+
+    var data = await resp.json();
     showResult(data);
   } catch (e) {
-    showResult({ found: false, error: e.message });
+    showError('Network error. Please check your connection and try again.');
   } finally {
     loading.classList.remove('visible');
   }
 }
 
-async function verifyBySeq(topic, seq) {
-  const resp = await fetch(MIRROR + '/api/v1/topics/' + topic + '/messages?sequencenumber=' + seq);
-  const data = await resp.json();
-  if (!data.messages || data.messages.length === 0) return { found: false, error: 'Message not found on Hedera' };
-  return parseMsg(data.messages[0]);
-}
-
-async function verifyByHash(topic, hash) {
-  const resp = await fetch(MIRROR + '/api/v1/topics/' + topic + '/messages?order=desc&limit=100');
-  const data = await resp.json();
-  for (const msg of (data.messages || [])) {
-    const payload = JSON.parse(atob(msg.message));
-    if ((payload.seal_sha256 || '').startsWith(hash)) return parseMsg(msg);
-  }
-  return { found: false, error: 'Seal hash not found in recent messages. Try the full hash or sequence number.' };
-}
-
-function parseMsg(msg) {
-  const payload = JSON.parse(atob(msg.message));
-  const ts = msg.consensus_timestamp;
-  const secs = parseFloat(ts);
-  const date = new Date(secs * 1000);
-  return {
-    found: true,
-    sequence: msg.sequence_number,
-    timestamp: ts,
-    date: date.toISOString().replace('T', ' ').substring(0, 19) + ' UTC',
-    seal_sha256: payload.seal_sha256 || '',
-    seal_sha3_256: payload.seal_sha3_256 || '',
-    attestation_id: payload.attestation_id || '',
-  };
-}
-
 function showResult(data) {
-  const result = document.getElementById('result');
-  const dot = document.getElementById('resultDot');
-  const status = document.getElementById('resultStatus');
-  const grid = document.getElementById('resultGrid');
+  var result = document.getElementById('result');
+  var dot = document.getElementById('resultDot');
+  var status = document.getElementById('resultStatus');
+  var grid = document.getElementById('resultGrid');
+
+  while (grid.firstChild) {
+    grid.removeChild(grid.firstChild);
+  }
 
   if (data.found) {
     dot.className = 'result-dot confirmed';
     status.className = 'result-status confirmed';
     status.textContent = 'Record found on Hedera blockchain';
 
-    grid.innerHTML =
-      row('Seal SHA-256', data.seal_sha256) +
-      row('Seal SHA-3-256', data.seal_sha3_256) +
-      row('Consensus Timestamp', data.date) +
-      row('Sequence Number', String(data.sequence)) +
-      row('Attestation ID', data.attestation_id);
+    addRow(grid, 'Seal SHA-256', data.seal_sha256 || '');
+    addRow(grid, 'Seal SHA-3-256', data.seal_sha3_256 || '');
+    addRow(grid, 'Attestation ID', data.attestation_id || '');
+    addRow(grid, 'Sequence Number', String(data.sequence || ''));
+    addRow(grid, 'Consensus Timestamp', data.date || '');
   } else {
     dot.className = 'result-dot failed';
     status.className = 'result-status failed';
     status.textContent = 'Not found';
-    grid.innerHTML = row('Error', data.error || 'Unknown error');
+    addRow(grid, 'Error', data.error || 'Unknown error');
   }
 
   result.classList.add('visible');
 }
 
-function row(label, value) {
-  return '<div class="result-row"><div class="result-label">' + label + '</div><div class="result-value">' + value + '</div></div>';
+function showError(message) {
+  var result = document.getElementById('result');
+  var dot = document.getElementById('resultDot');
+  var status = document.getElementById('resultStatus');
+  var grid = document.getElementById('resultGrid');
+
+  while (grid.firstChild) {
+    grid.removeChild(grid.firstChild);
+  }
+
+  dot.className = 'result-dot failed';
+  status.className = 'result-status failed';
+  status.textContent = 'Verification failed';
+  addRow(grid, 'Error', message);
+  result.classList.add('visible');
+  document.getElementById('loading').classList.remove('visible');
 }
+
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  var q = params.get('q');
+  if (q) {
+    input.value = q;
+    doVerify();
+  }
+})();
 </script>
 </body>
 </html>

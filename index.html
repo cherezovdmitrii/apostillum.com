@@ -1072,7 +1072,7 @@ footer {
     <li><a href="https://app.apostillum.com/verify/">Verify</a></li>
   </ul>
   <div class="n-actions">
-    <a class="nav-link" href="https://app.apostillum.com/login">Log in</a>
+    <a class="nav-link" href="https://app.apostillum.com/login" data-nav-login="1">Log in</a>
     <a href="https://app.apostillum.com/pricing" class="n-cta">Claim a Charter seat</a>
   </div>
 </nav>
@@ -1314,6 +1314,28 @@ const obs = new IntersectionObserver((entries) => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
 }, { threshold: 0.1 });
 document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+<script>
+  (function() {
+    try {
+      fetch('https://app.apostillum.com/api/auth/me', {
+        credentials: 'include',
+        signal: AbortSignal.timeout(3000)
+      })
+      .then(function(r) {
+        if (!r.ok) return;
+        return r.json();
+      })
+      .then(function(data) {
+        if (!data || !data.email) return;
+        var el = document.querySelector('a[data-nav-login]');
+        if (!el) return;
+        el.textContent = 'Account';
+        el.setAttribute('href', 'https://app.apostillum.com/account');
+      })
+      .catch(function() { /* silent no-op */ });
+    } catch (e) { /* silent no-op */ }
+  })();
 </script>
 </body>
 </html>

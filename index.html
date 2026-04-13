@@ -115,8 +115,16 @@ nav {
   padding: 0 20px;
   transition: color .2s;
   display: block;
+  /* keep multi-word items like "How it works" / "Technical brief" on one line */
+  white-space: nowrap;
 }
 .n-index a:hover { color: var(--black); }
+/* Narrow desktop: primary nav is absolute-centered and can collide with the
+   right-actions block when all 5 items are at full padding (viewport 960-1100px).
+   Tighten item padding in that window so center + right don't overlap. */
+@media (max-width: 1100px) {
+  .n-index a { padding: 0 14px; }
+}
 
 .n-actions { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
 .n-verify {
@@ -1060,7 +1068,7 @@ footer {
     <li><a href="https://app.apostillum.com/charter">Charter</a></li>
     <li><a href="https://app.apostillum.com/pricing">Pricing</a></li>
     <li><a href="https://app.apostillum.com/brief">Technical brief</a></li>
-    <li><a href="/verify/">Verify</a></li>
+    <li><a href="https://app.apostillum.com/verify/">Verify</a></li>
   </ul>
   <div class="n-actions">
     <a class="nav-link" href="https://app.apostillum.com/login">Log in</a>
@@ -1278,7 +1286,7 @@ footer {
 <section class="close-cta">
   <div class="close-cta-inner">
     <a href="https://app.apostillum.com/pricing" class="btn-primary">Claim a Charter seat</a>
-    <a href="/verify/" class="btn-secondary">Verify a record &rarr;</a>
+    <a href="https://app.apostillum.com/verify/" class="btn-secondary">Verify a record &rarr;</a>
   </div>
 </section>
 
@@ -1290,7 +1298,7 @@ footer {
       <a href="https://app.apostillum.com/pricing">Pricing</a>
       <a href="https://app.apostillum.com/charter">Charter</a>
       <a href="https://app.apostillum.com/brief">Technical brief</a>
-      <a href="/verify/">Verify</a>
+      <a href="https://app.apostillum.com/verify/">Verify</a>
       <a href="mailto:contact@apostillum.com">Contact</a>
     </div>
   </div>
